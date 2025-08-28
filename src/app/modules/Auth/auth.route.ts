@@ -5,13 +5,7 @@ import validateRequest from "../../middleware/validateRequest";
 const router = express.Router();
 
 router.post("/", AuthControllers.loginUser);
-router.get(
-  "/me/:email",
-  () => {
-    console.log("Check Get Me");
-  },
-  AuthControllers.getAllUser
-);
+router.get("/me/:email", AuthControllers.getMe);
 router.get("/all-user", AuthControllers.getAllUser);
 router.patch("/update/:email", AuthControllers.UpdateUser);
 

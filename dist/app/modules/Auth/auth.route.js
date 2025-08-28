@@ -8,9 +8,7 @@ const express_1 = __importDefault(require("express"));
 const auth_controller_1 = require("./auth.controller");
 const router = express_1.default.Router();
 router.post("/", auth_controller_1.AuthControllers.loginUser);
-router.get("/me/:email", () => {
-    console.log("Check Get Me");
-}, auth_controller_1.AuthControllers.getAllUser);
+router.get("/me/:email", auth_controller_1.AuthControllers.getMe);
 router.get("/all-user", auth_controller_1.AuthControllers.getAllUser);
 router.patch("/update/:email", auth_controller_1.AuthControllers.UpdateUser);
 exports.AuthRoutes = router;

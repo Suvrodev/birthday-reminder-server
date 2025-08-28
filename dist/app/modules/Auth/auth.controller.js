@@ -31,6 +31,23 @@ const loginUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
 });
 //Find Me
+const getAllUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log("ki re baaal");
+        const result = yield auth_service_1.AuthServices.getAllUserFromDB();
+        res.status(200).json({
+            success: true,
+            message: "User Find Successfully",
+            statusCode: 200,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+        // throw new AppError(401, error);
+    }
+});
+//Find Me
 const getMe = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -70,6 +87,7 @@ const UpdateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.AuthControllers = {
     loginUser,
+    getAllUser,
     getMe,
     UpdateUser,
 };

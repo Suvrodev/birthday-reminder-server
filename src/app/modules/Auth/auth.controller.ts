@@ -22,6 +22,22 @@ const loginUser: RequestHandler = async (req, res, next) => {
 };
 
 //Find Me
+const getAllUser: RequestHandler = async (req, res, next) => {
+  try {
+    console.log("ki re baaal");
+    const result = await AuthServices.getAllUserFromDB();
+    res.status(200).json({
+      success: true,
+      message: "User Find Successfully",
+      statusCode: 200,
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+    // throw new AppError(401, error);
+  }
+};
+//Find Me
 const getMe: RequestHandler = async (req, res, next) => {
   try {
     const email = req?.params?.email;
@@ -61,6 +77,7 @@ const UpdateUser: RequestHandler = async (req, res, next) => {
 
 export const AuthControllers = {
   loginUser,
+  getAllUser,
   getMe,
   UpdateUser,
 };

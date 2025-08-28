@@ -40,6 +40,11 @@ const loginUser = async (payload: TLoginUser) => {
   };
 };
 
+const getAllUserFromDB = async () => {
+  const result = await userModel.find();
+  return result;
+};
+
 const getMeFromDB = async (email: string) => {
   // Step 1: Check if user exists
   const isUserExists = await userModel.findOne({ email });
@@ -105,6 +110,7 @@ const updateUserProfile = async (email: string, payload: TLoginUser) => {
 
 export const AuthServices = {
   loginUser,
+  getAllUserFromDB,
   getMeFromDB,
   updateUserProfile,
 };

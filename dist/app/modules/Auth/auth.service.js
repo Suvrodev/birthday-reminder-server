@@ -47,6 +47,10 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         accessToken,
     };
 });
+const getAllUserFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield auth_model_1.userModel.find();
+    return result;
+});
 const getMeFromDB = (email) => __awaiter(void 0, void 0, void 0, function* () {
     // Step 1: Check if user exists
     const isUserExists = yield auth_model_1.userModel.findOne({ email });
@@ -100,6 +104,7 @@ const updateUserProfile = (email, payload) => __awaiter(void 0, void 0, void 0, 
 });
 exports.AuthServices = {
     loginUser,
+    getAllUserFromDB,
     getMeFromDB,
     updateUserProfile,
 };

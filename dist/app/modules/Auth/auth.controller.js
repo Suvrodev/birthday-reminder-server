@@ -30,6 +30,46 @@ const loginUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         // throw new AppError(401, error);
     }
 });
+//Find Me
+const getMe = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const email = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.email;
+        console.log("Come Email: ", email);
+        const result = yield auth_service_1.AuthServices.getMeFromDB(email);
+        res.status(200).json({
+            success: true,
+            message: "User Find Successfully",
+            statusCode: 200,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+        // throw new AppError(401, error);
+    }
+});
+//Find Me
+const UpdateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const email = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.email;
+        const payload = req === null || req === void 0 ? void 0 : req.body;
+        const result = yield auth_service_1.AuthServices.updateUserProfile(email, payload);
+        res.status(200).json({
+            success: true,
+            message: "User Udpated Successfully",
+            statusCode: 200,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+        // throw new AppError(401, error);
+    }
+});
 exports.AuthControllers = {
     loginUser,
+    getMe,
+    UpdateUser,
 };

@@ -21,6 +21,46 @@ const loginUser: RequestHandler = async (req, res, next) => {
   }
 };
 
+//Find Me
+const getMe: RequestHandler = async (req, res, next) => {
+  try {
+    const email = req?.params?.email;
+    console.log("Come Email: ", email);
+
+    const result = await AuthServices.getMeFromDB(email);
+    res.status(200).json({
+      success: true,
+      message: "User Find Successfully",
+      statusCode: 200,
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+    // throw new AppError(401, error);
+  }
+};
+
+//Find Me
+const UpdateUser: RequestHandler = async (req, res, next) => {
+  try {
+    const email = req?.params?.email;
+    const payload = req?.body;
+
+    const result = await AuthServices.updateUserProfile(email, payload);
+    res.status(200).json({
+      success: true,
+      message: "User Udpated Successfully",
+      statusCode: 200,
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
+    // throw new AppError(401, error);
+  }
+};
+
 export const AuthControllers = {
   loginUser,
+  getMe,
+  UpdateUser,
 };

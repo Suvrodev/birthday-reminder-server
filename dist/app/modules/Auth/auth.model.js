@@ -24,7 +24,7 @@ const authSchema = new mongoose_1.Schema({
             "Please enter a valid email address",
         ],
     },
-    image: {
+    profileImage: {
         type: String,
         default: "https://i.ibb.co/d4rvmWjR/logged-User.png",
     },

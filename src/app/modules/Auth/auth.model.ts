@@ -25,7 +25,7 @@ const authSchema = new Schema<TLoginUser>(
       ],
     },
 
-    image: {
+    profileImage: {
       type: String,
       default: "https://i.ibb.co/d4rvmWjR/logged-User.png",
     },

@@ -46,9 +46,10 @@ const getAllUserFromDB = async () => {
 };
 
 const getMeFromDB = async (email: string) => {
+  console.log("Hiii");
   // Step 1: Check if user exists
   const isUserExists = await userModel.findOne({ email });
-  // console.log("is User exists: ", isUserExists);
+  console.log("is User exists: ", isUserExists);
 
   // Step 2: If not exists, create a new user
   if (!isUserExists) {

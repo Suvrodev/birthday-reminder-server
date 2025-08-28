@@ -51,6 +51,7 @@ const getAllUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 const getMe = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
+        console.log("This is Get ME");
         const email = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.email;
         console.log("Come Email: ", email);
         const result = yield auth_service_1.AuthServices.getMeFromDB(email);

@@ -22,18 +22,20 @@ const app = (0, express_1.default)();
 // app.use(express.json());
 app.use(express_1.default.json({ limit: "5mb" }));
 app.use(express_1.default.urlencoded({ extended: true, limit: "5mb" }));
-const allowedOrigins = ["http://localhost:5173", "http://localhost:3000"];
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://birthday-reminder-ebon.vercel.app",
+];
 app.use((0, cors_1.default)({
-    origin: function (origin, callback) {
-        console.log("Incoming origin:", origin);
-        // Allow requests with no origin (like mobile apps, curl, etc.)
+    origin: (origin, callback) => {
         if (!origin)
-            return callback(null, true);
+            return callback(null, true); // allow non-browser requests
         if (allowedOrigins.includes(origin)) {
-            return callback(null, true);
+            callback(null, true);
         }
         else {
-            return callback(new Error("Not allowed by CORS"));
+            callback(null, false); // just deny without throwing error
         }
     },
     credentials: true,

@@ -40,6 +40,7 @@ const getAllUser: RequestHandler = async (req, res, next) => {
 //Find Me
 const getMe: RequestHandler = async (req, res, next) => {
   try {
+    console.log("This is Get ME");
     const email = req?.params?.email;
     console.log("Come Email: ", email);
 

@@ -1,0 +1,114 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FriendControllers = void 0;
+const friend_service_1 = require("./friend.service");
+const friend_getService_1 = require("./friend.getService");
+// Create Friend
+const createFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const friend = req.body;
+        console.log("Friend: ", friend);
+        // Call service function to save data in DB
+        const result = yield friend_service_1.FriendServices.createFriendIntoDB(friend);
+        res.status(200).json({
+            message: "Friend added successfully",
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// Get All Friends
+const getAllFriends = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { name, sort, page, limit, ref } = req.query;
+        const result = yield friend_getService_1.FriendGetServices.getAllFriends({
+            name: name,
+            sort: sort || "asc",
+            page: page ? Number(page) : 1,
+            limit: limit ? Number(limit) : 10,
+            ref: ref,
+        });
+        if (!result.success) {
+            res.status(400).json({
+                message: "ref (email) is required",
+                success: false,
+            });
+            return; // 👈 void return
+        }
+        res.status(200).json({
+            message: "Friends retrieved successfully",
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// Get Single Friend
+const getSingleFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const friendId = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.friendId;
+        const result = yield friend_service_1.FriendServices.getSingleFriendFromDB(friendId);
+        res.status(200).json({
+            message: "Friend retrieved successfully",
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// Delete Friend
+const deleteFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const friendId = req.params.id;
+        console.log("Friend id for delete: ", friendId);
+        const result = yield friend_service_1.FriendServices.deleteFriendFromDB(friendId);
+        res.status(200).json({
+            message: "Friend deleted successfully",
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// Update Friend
+const updateFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const friendId = req.params.id;
+        const friendBody = req === null || req === void 0 ? void 0 : req.body;
+        const result = yield friend_service_1.FriendServices.updateFriendFromDB(friendId, friendBody);
+        res.status(200).json({
+            message: "Friend updated successfully",
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.FriendControllers = {
+    createFriend,
+    getAllFriends,
+    getSingleFriend,
+    deleteFriend,
+    updateFriend,
+};

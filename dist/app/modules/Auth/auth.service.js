@@ -52,9 +52,10 @@ const getAllUserFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const getMeFromDB = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Hiii");
     // Step 1: Check if user exists
     const isUserExists = yield auth_model_1.userModel.findOne({ email });
-    // console.log("is User exists: ", isUserExists);
+    console.log("is User exists: ", isUserExists);
     // Step 2: If not exists, create a new user
     if (!isUserExists) {
         throw new AppError_1.default(404, "User not Found");

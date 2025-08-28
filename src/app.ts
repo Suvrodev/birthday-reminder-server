@@ -11,17 +11,19 @@ const app: Application = express();
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true, limit: "5mb" }));
 
-const allowedOrigins = ["http://localhost:5173", "http://localhost:3000"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://birthday-reminder-ebon.vercel.app",
+];
 app.use(
   cors({
-    origin: function (origin, callback) {
-      console.log("Incoming origin:", origin);
-      // Allow requests with no origin (like mobile apps, curl, etc.)
-      if (!origin) return callback(null, true);
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // allow non-browser requests
       if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
+        callback(null, true);
       } else {
-        return callback(new Error("Not allowed by CORS"));
+        callback(null, false); // just deny without throwing error
       }
     },
     credentials: true,

@@ -30,23 +30,53 @@ const createFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 // Get All Friends
+// const getAllFriends: RequestHandler = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ): Promise<void> => {
+//   try {
+//     const { name, sort, page, limit, ref } = req.query;
+//     const result = await FriendGetServices.getAllFriends({
+//       name: name as string,
+//       sort: (sort as "asc" | "desc") || "asc",
+//       page: page ? Number(page) : 1,
+//       limit: limit ? Number(limit) : 10,
+//       ref: ref as string,
+//     });
+//     if (!result.success) {
+//       res.status(400).json({
+//         message: "ref (email) is required",
+//         success: false,
+//       });
+//       return; // 👈 void return
+//     }
+//     res.status(200).json({
+//       message: "Friends retrieved successfully",
+//       success: true,
+//       data: result,
+//     });
+//   } catch (error: any) {
+//     next(error);
+//   }
+// };
+// Get All Friends
 const getAllFriends = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("COme: ");
     try {
-        const { name, sort, page, limit, ref } = req.query;
+        const { ref, search, sort, sortBy, page, limit } = req.query;
+        if (!ref || typeof ref !== "string") {
+            res.status(400).json({ success: false, message: "ref is required" });
+            return;
+        }
         const result = yield friend_getService_1.FriendGetServices.getAllFriends({
-            name: name,
-            sort: sort || "asc",
+            ref,
+            name: typeof search === "string" ? search : undefined,
+            sort: sort === "asc" || sort === "desc" ? sort : "asc",
+            sortBy: sortBy === "name" || sortBy === "date" ? sortBy : "date",
             page: page ? Number(page) : 1,
             limit: limit ? Number(limit) : 10,
-            ref: ref,
         });
-        if (!result.success) {
-            res.status(400).json({
-                message: "ref (email) is required",
-                success: false,
-            });
-            return; // 👈 void return
-        }
         res.status(200).json({
             message: "Friends retrieved successfully",
             success: true,

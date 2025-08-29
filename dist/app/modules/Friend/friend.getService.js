@@ -9,29 +9,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FriendGetServices = void 0;
+exports.FriendGetServices = exports.getAllFriends = void 0;
 const friend_model_1 = require("./friend.model");
-const getAllFriends = (_a) => __awaiter(void 0, [_a], void 0, function* ({ name, sort = "asc", page = 1, limit = 10, ref, }) {
-    console.log("====================================================================");
+const getAllFriends = (_a) => __awaiter(void 0, [_a], void 0, function* ({ ref, name, sort = "asc", sortBy = "date", page = 1, limit = 10, }) {
     if (!ref) {
         return { success: false, message: "ref (email) is required" };
     }
-    const query = { ref }; // ✅ Only filter by ref
+    const query = { ref };
     if (name) {
-        query.name = { $regex: name, $options: "i" };
+        // শুধু name এর শুরু অনুযায়ী match
+        query.name = { $regex: `^${name}`, $options: "i" };
     }
     const skip = (page - 1) * limit;
     const sortOrder = sort === "asc" ? 1 : -1;
-    const sortOption = { date: sortOrder };
+    // sortBy অনুযায়ী sort option
+    const sortOption = {};
+    sortOption[sortBy] = sortOrder;
     const friends = yield friend_model_1.FriendModel.find(query)
         .sort(sortOption)
         .skip(skip)
         .limit(limit)
-        .select("name date photo ratting ref");
+        .select("name date photo ratting ref location phone");
     const total = yield friend_model_1.FriendModel.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
-    return { success: true, data: friends, page, totalPages, total };
+    return {
+        success: true,
+        data: friends,
+        page,
+        totalPages,
+        total,
+    };
 });
+exports.getAllFriends = getAllFriends;
 exports.FriendGetServices = {
-    getAllFriends,
+    getAllFriends: exports.getAllFriends,
 };

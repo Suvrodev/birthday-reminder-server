@@ -15,6 +15,7 @@ const getAllFriends = (_a) => __awaiter(void 0, [_a], void 0, function* ({ ref, 
     if (!ref) {
         return { success: false, message: "ref (email) is required" };
     }
+    console.log("Limit: ", limit);
     const query = { ref };
     if (name) {
         // শুধু name এর শুরু অনুযায়ী match

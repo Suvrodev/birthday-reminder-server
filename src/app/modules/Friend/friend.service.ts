@@ -27,12 +27,14 @@ const deleteFriendFromDB = async (friendId: string) => {
 
 // Update Friend
 const updateFriendFromDB = async (friendId: string, friendData: TFriend) => {
-  console.log("friend id:", friendId);
-  console.log("Update Data: ", friendData);
-  const result = await FriendModel.findByIdAndUpdate(
+  console.log("friend idd:", friendId);
+  console.log("Update Dataaa: ", friendData);
+  const result = await FriendModel.findOneAndUpdate(
     { _id: friendId },
-    friendData,
-    { new: true }
+    { $set: friendData },
+    {
+      new: true,
+    }
   );
   return result;
 };

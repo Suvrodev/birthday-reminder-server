@@ -10,7 +10,7 @@ const router = express_1.default.Router();
 //will call controller function
 router.post("/", friend_controller_1.FriendControllers.createFriend);
 router.get("/", friend_controller_1.FriendControllers.getAllFriends);
-router.get("/:id", friend_controller_1.FriendControllers.getSingleFriend);
-router.delete("/:id", friend_controller_1.FriendControllers.deleteFriend);
-router.patch("/update/:id", friend_controller_1.FriendControllers.updateFriend);
+router.get("/single/:friendId", friend_controller_1.FriendControllers.getSingleFriend);
+router.delete("/delete/:friendId", friend_controller_1.FriendControllers.deleteFriend);
+router.patch("/update/:friendId", friend_controller_1.FriendControllers.updateFriend);
 exports.FriendRoutes = router;

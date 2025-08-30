@@ -21,7 +21,7 @@ export const getAllFriends = async ({
   if (!ref) {
     return { success: false, message: "ref (email) is required" };
   }
-
+  console.log("Limit: ", limit);
   const query: any = { ref };
 
   if (name) {

@@ -107,7 +107,7 @@ const getSingleFriend: RequestHandler = async (req, res, next) => {
 // Delete Friend
 const deleteFriend: RequestHandler = async (req, res, next) => {
   try {
-    const friendId = req.params.id;
+    const friendId = req.params.friendId;
     console.log("Friend id for delete: ", friendId);
     const result = await FriendServices.deleteFriendFromDB(friendId);
 
@@ -124,7 +124,7 @@ const deleteFriend: RequestHandler = async (req, res, next) => {
 // Update Friend
 const updateFriend: RequestHandler = async (req, res, next) => {
   try {
-    const friendId = req.params.id;
+    const friendId = req.params.friendId;
     const friendBody = req?.body;
     const result = await FriendServices.updateFriendFromDB(
       friendId,

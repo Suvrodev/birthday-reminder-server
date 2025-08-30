@@ -8,8 +8,8 @@ const router = express.Router();
 //will call controller function
 router.post("/", FriendControllers.createFriend);
 router.get("/", FriendControllers.getAllFriends);
-router.get("/:id", FriendControllers.getSingleFriend);
-router.delete("/:id", FriendControllers.deleteFriend);
-router.patch("/update/:id", FriendControllers.updateFriend);
+router.get("/single/:friendId", FriendControllers.getSingleFriend);
+router.delete("/delete/:friendId", FriendControllers.deleteFriend);
+router.patch("/update/:friendId", FriendControllers.updateFriend);
 
 export const FriendRoutes = router;

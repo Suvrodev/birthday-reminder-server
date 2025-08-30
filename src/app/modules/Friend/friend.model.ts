@@ -3,7 +3,7 @@ import { TFriend } from "./friend.interface";
 
 const friendSchema = new Schema<TFriend>(
   {
-    name: { type: String, required: [true, "Name is required"] },
+    name: { type: String, required: [true, "Name is required"], maxlength: 25 },
     date: { type: String, required: [true, "Date is required"] },
     photo: { type: String, required: [true, "Photo is required"] }, // base64 string
     ratting: { type: Number, required: [true, "Rating is required"] },

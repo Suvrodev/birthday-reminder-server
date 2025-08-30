@@ -34,9 +34,11 @@ const deleteFriendFromDB = (friendId) => __awaiter(void 0, void 0, void 0, funct
 });
 // Update Friend
 const updateFriendFromDB = (friendId, friendData) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("friend id:", friendId);
-    console.log("Update Data: ", friendData);
-    const result = yield friend_model_1.FriendModel.findByIdAndUpdate({ _id: friendId }, friendData, { new: true });
+    console.log("friend idd:", friendId);
+    console.log("Update Dataaa: ", friendData);
+    const result = yield friend_model_1.FriendModel.findOneAndUpdate({ _id: friendId }, { $set: friendData }, {
+        new: true,
+    });
     return result;
 });
 exports.FriendServices = {

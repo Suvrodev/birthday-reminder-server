@@ -106,7 +106,7 @@ const getSingleFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
 // Delete Friend
 const deleteFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const friendId = req.params.id;
+        const friendId = req.params.friendId;
         console.log("Friend id for delete: ", friendId);
         const result = yield friend_service_1.FriendServices.deleteFriendFromDB(friendId);
         res.status(200).json({
@@ -122,7 +122,7 @@ const deleteFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
 // Update Friend
 const updateFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const friendId = req.params.id;
+        const friendId = req.params.friendId;
         const friendBody = req === null || req === void 0 ? void 0 : req.body;
         const result = yield friend_service_1.FriendServices.updateFriendFromDB(friendId, friendBody);
         res.status(200).json({

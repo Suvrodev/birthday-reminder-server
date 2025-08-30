@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FriendModel = void 0;
 const mongoose_1 = require("mongoose");
 const friendSchema = new mongoose_1.Schema({
-    name: { type: String, required: [true, "Name is required"] },
+    name: { type: String, required: [true, "Name is required"], maxlength: 25 },
     date: { type: String, required: [true, "Date is required"] },
     photo: { type: String, required: [true, "Photo is required"] }, // base64 string
     ratting: { type: Number, required: [true, "Rating is required"] },

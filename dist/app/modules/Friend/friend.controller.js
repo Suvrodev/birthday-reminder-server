@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FriendControllers = void 0;
 const friend_service_1 = require("./friend.service");
 const friend_getService_1 = require("./friend.getService");
+const friend_galleryService_1 = require("./friend.galleryService");
 // Create Friend
 const createFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -87,6 +88,29 @@ const getAllFriends = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         next(error);
     }
 });
+// Get All Friend Photos (pagination only)
+const getAllFriendPhotos = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { ref, page, limit } = req.query;
+        if (!ref || typeof ref !== "string") {
+            res.status(400).json({ success: false, message: "ref is required" });
+            return;
+        }
+        const result = yield friend_galleryService_1.FriendsGalleryService.getAllFriendPhotos({
+            ref,
+            page: page ? Number(page) : 1,
+            limit: limit ? Number(limit) : 10,
+        });
+        res.status(200).json({
+            message: "Friend photos retrieved successfully",
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
 // Get Single Friend
 const getSingleFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -138,6 +162,7 @@ const updateFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
 exports.FriendControllers = {
     createFriend,
     getAllFriends,
+    getAllFriendPhotos,
     getSingleFriend,
     deleteFriend,
     updateFriend,

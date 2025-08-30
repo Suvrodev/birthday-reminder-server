@@ -3,6 +3,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import AppError from "../../errors/AppError";
 import { FriendServices } from "./friend.service";
 import { FriendGetServices } from "./friend.getService";
+import { FriendsGalleryService } from "./friend.galleryService";
 // Create Friend
 const createFriend: RequestHandler = async (req, res, next) => {
   try {
@@ -88,6 +89,32 @@ const getAllFriends: RequestHandler = async (req, res, next) => {
   }
 };
 
+// Get All Friend Photos (pagination only)
+const getAllFriendPhotos: RequestHandler = async (req, res, next) => {
+  try {
+    const { ref, page, limit } = req.query;
+
+    if (!ref || typeof ref !== "string") {
+      res.status(400).json({ success: false, message: "ref is required" });
+      return;
+    }
+
+    const result = await FriendsGalleryService.getAllFriendPhotos({
+      ref,
+      page: page ? Number(page) : 1,
+      limit: limit ? Number(limit) : 10,
+    });
+
+    res.status(200).json({
+      message: "Friend photos retrieved successfully",
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Get Single Friend
 const getSingleFriend: RequestHandler = async (req, res, next) => {
   try {
@@ -144,6 +171,7 @@ const updateFriend: RequestHandler = async (req, res, next) => {
 export const FriendControllers = {
   createFriend,
   getAllFriends,
+  getAllFriendPhotos,
   getSingleFriend,
   deleteFriend,
   updateFriend,

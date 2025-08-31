@@ -6,11 +6,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const auth_route_1 = require("../modules/Auth/auth.route");
 const friend_route_1 = require("../modules/Friend/friend.route");
+const notification_route_1 = require("../modules/Notifications/notification.route");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
         path: "/friend",
         route: friend_route_1.FriendRoutes,
+    },
+    {
+        path: "/notify",
+        route: notification_route_1.NotificationRouter,
     },
     {
         path: "/login",

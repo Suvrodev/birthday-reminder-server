@@ -1,58 +1,99 @@
-import { Request, Response } from "express";
+import { Request, RequestHandler, Response } from "express";
 import { NotificationModel } from "./notification.model";
+import { NotificationRestService } from "./notificationResTService";
+import AppError from "../../errors/AppError";
 
 /** Get notifications for a user */
-export const getUserNotifications = async (req: Request, res: Response) => {
+// export const getUserNotifications = async (req: Request, res: Response) => {
+//   try {
+//     const { ref } = req.query;
+//     if (!ref || typeof ref !== "string") {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "ref is required" });
+//     }
+
+//     const notifications = await NotificationModel.find({ ref })
+//       .sort({ createdAt: -1 })
+//       .limit(50);
+
+//     res.status(200).json({ success: true, data: notifications });
+//   } catch (error: any) {
+//     console.error("Error fetching notifications:", error.message);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error",
+//       error: error.message,
+//     });
+//   }
+// };
+
+// get Step-2 and okay
+// export const getUserNotifications: RequestHandler = async (req, res) => {
+//   try {
+//     const { ref } = req.query;
+//     if (!ref || typeof ref !== "string") {
+//       res.status(400).json({ success: false, message: "ref is required" });
+//       return;
+//     }
+
+//     const notifications = await NotificationModel.find({ ref })
+//       .sort({ createdAt: -1 })
+//       .limit(50);
+
+//     res.status(200).json({ success: true, data: notifications });
+//   } catch (error: any) {
+//     console.error("Error fetching notifications:", error.message);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error",
+//       error: error.message,
+//     });
+//   }
+// };
+
+// get Step-3 (My Own Style)
+export const getUserNotifications: RequestHandler = async (req, res, next) => {
   try {
     const { ref } = req.query;
     if (!ref || typeof ref !== "string") {
-      return res
-        .status(400)
-        .json({ success: false, message: "ref is required" });
+      res.status(400).json({ success: false, message: "ref is required" });
+      return;
     }
 
-    const notifications = await NotificationModel.find({ ref })
-      .sort({ createdAt: -1 })
-      .limit(50);
-
-    return res.status(200).json({ success: true, data: notifications });
-  } catch (error: any) {
-    console.error("Error fetching notifications:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-      error: error.message,
+    const result = await NotificationRestService.getNotificationFromDB(ref);
+    res.status(200).json({
+      message: "Notification retrieved successfully",
+      success: true,
+      data: result,
     });
+  } catch (error: any) {
+    next(error);
   }
 };
 
 /** Mark a notification as read */
-export const markNotificationRead = async (req: Request, res: Response) => {
+export const markNotificationRead: RequestHandler = async (req, res, next) => {
   try {
     const { id } = req.params;
-    if (!id)
-      return res
-        .status(400)
-        .json({ success: false, message: "Notification id is required" });
+    console.log("Come ID: ", id);
+    if (!id) {
+      throw new AppError(404, "Notification not found");
+    }
 
-    const notification = await NotificationModel.findByIdAndUpdate(
-      id,
-      { isRead: true },
-      { new: true }
-    );
-
-    if (!notification)
-      return res
-        .status(404)
-        .json({ success: false, message: "Notification not found" });
-
-    return res.status(200).json({ success: true, data: notification });
+    const result = await NotificationRestService.updateNotificationFromDB(id);
+    res.status(200).json({
+      message: "Notification retrieved successfully",
+      success: true,
+      data: result,
+    });
   } catch (error: any) {
     console.error("Error updating notification:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-      error: error.message,
-    });
+    next(error);
   }
+};
+
+export const NotificationController = {
+  getUserNotifications,
+  markNotificationRead,
 };

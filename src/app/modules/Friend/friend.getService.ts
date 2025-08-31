@@ -1,59 +1,57 @@
-import { SortOrder } from "mongoose";
 import { FriendModel } from "./friend.model";
+import { getDaysUntilBirthday } from "./getDaysUntilBirthday";
 
 interface GetAllFriendsParams {
   ref: string;
-  name?: string;
-  sort?: "asc" | "desc";
-  sortBy?: "date" | "name" | "rating"; // ✅ rating add
+  search?: string;
   page?: number;
   limit?: number;
 }
 
-export const getAllFriends = async ({
+const getAllFriends = async ({
   ref,
-  name,
-  sort = "asc",
-  sortBy = "date",
+  search,
   page = 1,
   limit = 10,
 }: GetAllFriendsParams) => {
   if (!ref) {
     return { success: false, message: "ref (email) is required" };
   }
-  console.log("Limit: ", limit);
-  const query: any = { ref };
 
-  if (name) {
-    // শুধু name এর শুরু অনুযায়ী match
-    query.name = { $regex: `^${name}`, $options: "i" };
+  const query: any = { ref };
+  if (search) {
+    // query.name = { $regex: `^${name}`, $options: "i" };
+    query.name = { $regex: search, $options: "i" }; // ^ remove
   }
 
-  const skip = (page - 1) * limit;
-  const sortOrder: SortOrder = sort === "asc" ? 1 : -1;
+  // 1️⃣ Sob friends niye aso (limit + skip pore apply)
+  const allFriends = await FriendModel.find(query).select(
+    "name date photo ratting ref location phone"
+  );
 
-  // sortBy অনুযায়ী sort option
-  const sortOption: { [key: string]: SortOrder } = {};
-  sortOption[sortBy] = sortOrder;
+  // 2️⃣ remain calculate
+  const friendsWithRemain = allFriends.map((friend) => ({
+    ...friend.toObject(),
+    remain: getDaysUntilBirthday(friend.date),
+  }));
 
-  const friends = await FriendModel.find(query)
-    .sort(sortOption)
-    .skip(skip)
-    .limit(limit)
-    .select("name date photo ratting ref location phone");
+  // 3️⃣ remain ascending sort
+  const sortedFriends = friendsWithRemain.sort((a, b) => a.remain - b.remain);
 
-  const total = await FriendModel.countDocuments(query);
+  // 4️⃣ pagination slice
+  const total = sortedFriends.length;
   const totalPages = Math.ceil(total / limit);
+  const paginatedData = sortedFriends.slice((page - 1) * limit, page * limit);
 
   return {
     success: true,
-    data: friends,
+    data: paginatedData,
     page,
     totalPages,
     total,
   };
 };
 
-export const FriendGetServices = {
-  getAllFriends,
+export const FriendGetServices_RemSort = {
+  getAllFriends, // ✅ standard maintained
 };

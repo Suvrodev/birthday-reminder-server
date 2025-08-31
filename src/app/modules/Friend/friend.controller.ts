@@ -1,9 +1,11 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 
 import AppError from "../../errors/AppError";
-import { FriendServices } from "./friend.service";
-import { FriendGetServices } from "./friend.getService";
 import { FriendsGalleryService } from "./friend.galleryService";
+import { FriendGetServices_Rem } from "./friend.getService_Rem";
+import { FriendModel } from "./friend.model";
+import { FriendServices } from "./friend.service";
+import { FriendGetServices_RemSort } from "./friend.getService";
 // Create Friend
 const createFriend: RequestHandler = async (req, res, next) => {
   try {
@@ -22,44 +24,7 @@ const createFriend: RequestHandler = async (req, res, next) => {
   }
 };
 
-// Get All Friends
-
-// const getAllFriends: RequestHandler = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<void> => {
-//   try {
-//     const { name, sort, page, limit, ref } = req.query;
-
-//     const result = await FriendGetServices.getAllFriends({
-//       name: name as string,
-//       sort: (sort as "asc" | "desc") || "asc",
-//       page: page ? Number(page) : 1,
-//       limit: limit ? Number(limit) : 10,
-//       ref: ref as string,
-//     });
-
-//     if (!result.success) {
-//       res.status(400).json({
-//         message: "ref (email) is required",
-//         success: false,
-//       });
-//       return; // 👈 void return
-//     }
-
-//     res.status(200).json({
-//       message: "Friends retrieved successfully",
-//       success: true,
-//       data: result,
-//     });
-//   } catch (error: any) {
-//     next(error);
-//   }
-// };
-
-// Get All Friends
-
+// Get All Friends With Remaining
 const getAllFriends: RequestHandler = async (req, res, next) => {
   console.log("COme: ");
   try {
@@ -70,7 +35,7 @@ const getAllFriends: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    const result = await FriendGetServices.getAllFriends({
+    const result = await FriendGetServices_Rem.getAllFriends({
       ref,
       name: typeof search === "string" ? search : undefined,
       sort: sort === "asc" || sort === "desc" ? sort : "asc",
@@ -89,6 +54,33 @@ const getAllFriends: RequestHandler = async (req, res, next) => {
   }
 };
 
+// Get All Friends With Remaining Sort
+const getAllFriendsWithRemainSort: RequestHandler = async (req, res) => {
+  try {
+    const { ref, search, page, limit } = req.query;
+
+    if (!ref || typeof ref !== "string") {
+      res.status(400).json({ success: false, message: "ref is required" });
+      return;
+    }
+
+    const result = await FriendGetServices_RemSort.getAllFriends({
+      ref,
+      search: typeof search === "string" ? search : undefined,
+      page: page && !isNaN(Number(page)) ? Number(page) : 1,
+      limit: limit && !isNaN(Number(limit)) ? Number(limit) : 10,
+    });
+
+    res.status(200).json(result);
+  } catch (error: any) {
+    console.error("Error fetching friends (remain sort):", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
 // Get All Friend Photos (pagination only)
 const getAllFriendPhotos: RequestHandler = async (req, res, next) => {
   try {
@@ -172,6 +164,7 @@ export const FriendControllers = {
   createFriend,
   getAllFriends,
   getAllFriendPhotos,
+  getAllFriendsWithRemainSort,
   getSingleFriend,
   deleteFriend,
   updateFriend,

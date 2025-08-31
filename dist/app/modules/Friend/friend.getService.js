@@ -9,39 +9,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FriendGetServices = exports.getAllFriends = void 0;
+exports.FriendGetServices_RemSort = void 0;
 const friend_model_1 = require("./friend.model");
-const getAllFriends = (_a) => __awaiter(void 0, [_a], void 0, function* ({ ref, name, sort = "asc", sortBy = "date", page = 1, limit = 10, }) {
+const getDaysUntilBirthday_1 = require("./getDaysUntilBirthday");
+const getAllFriends = (_a) => __awaiter(void 0, [_a], void 0, function* ({ ref, search, page = 1, limit = 10, }) {
     if (!ref) {
         return { success: false, message: "ref (email) is required" };
     }
-    console.log("Limit: ", limit);
     const query = { ref };
-    if (name) {
-        // শুধু name এর শুরু অনুযায়ী match
-        query.name = { $regex: `^${name}`, $options: "i" };
+    if (search) {
+        // query.name = { $regex: `^${name}`, $options: "i" };
+        query.name = { $regex: search, $options: "i" }; // ^ remove
     }
-    const skip = (page - 1) * limit;
-    const sortOrder = sort === "asc" ? 1 : -1;
-    // sortBy অনুযায়ী sort option
-    const sortOption = {};
-    sortOption[sortBy] = sortOrder;
-    const friends = yield friend_model_1.FriendModel.find(query)
-        .sort(sortOption)
-        .skip(skip)
-        .limit(limit)
-        .select("name date photo ratting ref location phone");
-    const total = yield friend_model_1.FriendModel.countDocuments(query);
+    // 1️⃣ Sob friends niye aso (limit + skip pore apply)
+    const allFriends = yield friend_model_1.FriendModel.find(query).select("name date photo ratting ref location phone");
+    // 2️⃣ remain calculate
+    const friendsWithRemain = allFriends.map((friend) => (Object.assign(Object.assign({}, friend.toObject()), { remain: (0, getDaysUntilBirthday_1.getDaysUntilBirthday)(friend.date) })));
+    // 3️⃣ remain ascending sort
+    const sortedFriends = friendsWithRemain.sort((a, b) => a.remain - b.remain);
+    // 4️⃣ pagination slice
+    const total = sortedFriends.length;
     const totalPages = Math.ceil(total / limit);
+    const paginatedData = sortedFriends.slice((page - 1) * limit, page * limit);
     return {
         success: true,
-        data: friends,
+        data: paginatedData,
         page,
         totalPages,
         total,
     };
 });
-exports.getAllFriends = getAllFriends;
-exports.FriendGetServices = {
-    getAllFriends: exports.getAllFriends,
+exports.FriendGetServices_RemSort = {
+    getAllFriends, // ✅ standard maintained
 };

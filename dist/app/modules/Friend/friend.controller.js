@@ -10,9 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FriendControllers = void 0;
+const friend_galleryService_1 = require("./friend.galleryService");
+const friend_getService_Rem_1 = require("./friend.getService_Rem");
 const friend_service_1 = require("./friend.service");
 const friend_getService_1 = require("./friend.getService");
-const friend_galleryService_1 = require("./friend.galleryService");
 // Create Friend
 const createFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -30,38 +31,7 @@ const createFriend = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         next(error);
     }
 });
-// Get All Friends
-// const getAllFriends: RequestHandler = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<void> => {
-//   try {
-//     const { name, sort, page, limit, ref } = req.query;
-//     const result = await FriendGetServices.getAllFriends({
-//       name: name as string,
-//       sort: (sort as "asc" | "desc") || "asc",
-//       page: page ? Number(page) : 1,
-//       limit: limit ? Number(limit) : 10,
-//       ref: ref as string,
-//     });
-//     if (!result.success) {
-//       res.status(400).json({
-//         message: "ref (email) is required",
-//         success: false,
-//       });
-//       return; // 👈 void return
-//     }
-//     res.status(200).json({
-//       message: "Friends retrieved successfully",
-//       success: true,
-//       data: result,
-//     });
-//   } catch (error: any) {
-//     next(error);
-//   }
-// };
-// Get All Friends
+// Get All Friends With Remaining
 const getAllFriends = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("COme: ");
     try {
@@ -70,7 +40,7 @@ const getAllFriends = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             res.status(400).json({ success: false, message: "ref is required" });
             return;
         }
-        const result = yield friend_getService_1.FriendGetServices.getAllFriends({
+        const result = yield friend_getService_Rem_1.FriendGetServices_Rem.getAllFriends({
             ref,
             name: typeof search === "string" ? search : undefined,
             sort: sort === "asc" || sort === "desc" ? sort : "asc",
@@ -86,6 +56,31 @@ const getAllFriends = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     }
     catch (error) {
         next(error);
+    }
+});
+// Get All Friends With Remaining Sort
+const getAllFriendsWithRemainSort = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { ref, search, page, limit } = req.query;
+        if (!ref || typeof ref !== "string") {
+            res.status(400).json({ success: false, message: "ref is required" });
+            return;
+        }
+        const result = yield friend_getService_1.FriendGetServices_RemSort.getAllFriends({
+            ref,
+            search: typeof search === "string" ? search : undefined,
+            page: page && !isNaN(Number(page)) ? Number(page) : 1,
+            limit: limit && !isNaN(Number(limit)) ? Number(limit) : 10,
+        });
+        res.status(200).json(result);
+    }
+    catch (error) {
+        console.error("Error fetching friends (remain sort):", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
     }
 });
 // Get All Friend Photos (pagination only)
@@ -163,6 +158,7 @@ exports.FriendControllers = {
     createFriend,
     getAllFriends,
     getAllFriendPhotos,
+    getAllFriendsWithRemainSort,
     getSingleFriend,
     deleteFriend,
     updateFriend,

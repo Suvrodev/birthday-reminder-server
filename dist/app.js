@@ -25,6 +25,7 @@ app.use(express_1.default.urlencoded({ extended: true, limit: "5mb" }));
 const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:3000",
+    "http://localhost:3001",
     "https://birthday-reminder-ebon.vercel.app",
 ];
 app.use((0, cors_1.default)({

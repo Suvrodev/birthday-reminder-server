@@ -25,14 +25,12 @@ const getAllFriends = async ({
   }
 
   // 1️⃣ Sob friends niye aso (limit + skip pore apply)
-  const allFriends = await FriendModel.find(query).select(
-    "name date photo ratting ref location phone"
-  );
+  const allFriends = await FriendModel.find(query).select("name date ref  ");
 
   // 2️⃣ remain calculate
   const friendsWithRemain = allFriends.map((friend) => ({
     ...friend.toObject(),
-    remain: getDaysUntilBirthday(friend.date),
+    remain: getDaysUntilBirthday(friend.date as string),
   }));
 
   // 3️⃣ remain ascending sort

@@ -22,7 +22,7 @@ const getAllFriends = (_a) => __awaiter(void 0, [_a], void 0, function* ({ ref, 
         query.name = { $regex: search, $options: "i" }; // ^ remove
     }
     // 1️⃣ Sob friends niye aso (limit + skip pore apply)
-    const allFriends = yield friend_model_1.FriendModel.find(query).select("name date photo ratting ref location phone");
+    const allFriends = yield friend_model_1.FriendModel.find(query).select("name date ref  ");
     // 2️⃣ remain calculate
     const friendsWithRemain = allFriends.map((friend) => (Object.assign(Object.assign({}, friend.toObject()), { remain: (0, getDaysUntilBirthday_1.getDaysUntilBirthday)(friend.date) })));
     // 3️⃣ remain ascending sort

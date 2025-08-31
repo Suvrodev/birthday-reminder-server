@@ -48,7 +48,7 @@ export const getAllFriends = async ({
    */
   const friendsWithRemain = friends.map((friend) => ({
     ...friend.toObject(),
-    remain: getDaysUntilBirthday(friend.date),
+    remain: getDaysUntilBirthday(friend.date as string),
   }));
   /**
    * Remaining Day end
